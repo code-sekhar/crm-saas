@@ -7,7 +7,13 @@
 </x-slot>
 
 <div class="py-6">
+    @if(session('success'))
 
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
+
+    @endif
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
         <div class="bg-white shadow rounded-lg">
@@ -27,7 +33,7 @@
 
                 </div>
 
-                <table class="w-full border">
+                <table class="w-full border" id="leadTable" >
 
                     <thead>
 
@@ -72,7 +78,26 @@
                             </td>
 
                             <td class="border p-2">
-                                {{ $lead->status }}
+                                @if($lead->status == 'New')
+                                    <span class="px-2 py-1 bg-blue-500 text-white rounded font-size-12">
+                                        New
+                                    </span>
+
+                                @elseif($lead->status == 'Won')
+                                    <span class="px-2 py-1 bg-green-500 text-white rounded font-size-12">
+                                        Won
+                                    </span>
+
+                                @elseif($lead->status == 'Lost')
+                                    <span class="px-2 py-1 bg-red-500 text-white rounded font-size-12">
+                                        Lost
+                                    </span>
+
+                                @else
+                                    <span class="px-2 py-1 bg-gray-500 text-white rounded font-size-12">
+                                        {{ $lead->status }}
+                                    </span>
+                                @endif
                             </td>
                             <td class="border p-2 d-flex gap-2 justify-content-center">
                                 <a href="{{ route('leads.edit',$lead) }}" style="
@@ -116,6 +141,15 @@
     </div>
 
 </div>
+  <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function () {
 
+    $('#leadTable').DataTable();
+
+});
+</script>
 
 </x-app-layout>
+

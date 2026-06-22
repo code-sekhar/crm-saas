@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeadController;
+use App\Models\Lead;
 
 
 Route::get('/', function () {
@@ -14,9 +15,41 @@ Route::resource(
     LeadController::class
 )->middleware('auth');
 
+
+
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+    $tenantId = auth()->user()->tenant_id;
+
+    $totalLeads = Lead::where('tenant_id', $tenantId)->count();
+
+    $newLeads = Lead::where('tenant_id', $tenantId)
+        ->where('status', 'New')
+        ->count();
+
+    $wonLeads = Lead::where('tenant_id', $tenantId)
+        ->where('status', 'Won')
+        ->count();
+
+    $lostLeads = Lead::where('tenant_id', $tenantId)
+        ->where('status', 'Lost')
+        ->count();
+
+    $recentLeads = Lead::where('tenant_id', $tenantId)
+        ->latest()
+        ->take(5)
+        ->get();
+
+    return view('dashboard', compact(
+        'totalLeads',
+        'newLeads',
+        'wonLeads',
+        'lostLeads',
+        'recentLeads'
+    ));
+
+})->middleware(['auth'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

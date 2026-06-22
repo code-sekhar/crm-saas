@@ -21,7 +21,7 @@
             CRM Dashboard
         </h2>
     </x-slot>
-
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
 <div class="py-8">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
