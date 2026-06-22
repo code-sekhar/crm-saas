@@ -74,9 +74,13 @@
                             <td class="border p-2">
                                 {{ $lead->status }}
                             </td>
-                            <td>
-                                <a href="{{ route('leads.edit',$lead) }}">
-                                    Edit
+                            <td class="border p-2 d-flex gap-2 justify-content-center">
+                                <a href="{{ route('leads.edit',$lead) }}" style="
+    width: 20px !important;
+    display: flex;
+    float: left;
+">
+                                    <x-bxs-edit />
                                 </a>
 
                                 <form
@@ -87,8 +91,11 @@
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit">
-                                        Delete
+                                    <button type="submit" style="
+    width: 20px !important;
+    display: flex;
+">
+                                        <x-ri-delete-bin-4-fill />
                                     </button>
 
                                 </form>
