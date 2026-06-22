@@ -26,7 +26,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
 
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="p-5">
@@ -60,6 +60,14 @@
                     <p class="text-sm text-gray-500">Lost Leads</p>
                     <h3 class="text-3xl font-bold mt-2 text-red-600">
                         {{ $lostLeads ?? 0 }}
+                    </h3>
+                </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <p class="text-sm text-gray-500">Pending Tasks</p>
+                    <h3 class="text-3xl font-bold mt-2 text-yellow-600">
+                        {{ $pendingTasks ?? 0 }}
                     </h3>
                 </div>
             </div>

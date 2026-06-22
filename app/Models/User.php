@@ -42,4 +42,11 @@ class User extends Authenticatable
             'assigned_to'
         );
     }
+    public function tasks()
+    {
+        return $this->hasMany(
+            Task::class,
+            'assigned_to'
+        );
+    }
 }

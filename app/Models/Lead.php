@@ -30,4 +30,8 @@ class Lead extends Model
             'assigned_to'
         );
     }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }
