@@ -122,8 +122,30 @@
                                     {{ $lead->source }}
                                 </td>
 
-                                <td class="px-6 py-4">
+                                {{-- <td class="px-6 py-4">
                                     {{ $lead->status }}
+                                </td> --}}
+                                 <td class="px-6 py-4">
+                                    @if($lead->status == 'New')
+                                        <span class="px-2 py-1 bg-blue-500 text-white rounded text-xs">
+                                            New
+                                        </span>
+
+                                    @elseif($lead->status == 'Won')
+                                        <span class="px-2 py-1 bg-green-500 text-white rounded text-xs">
+                                            Won
+                                        </span>
+
+                                    @elseif($lead->status == 'Lost')
+                                        <span class="px-2 py-1 bg-red-500 text-white rounded text-xs">
+                                            Lost
+                                        </span>
+
+                                    @else
+                                        <span class="px-2 py-1 bg-gray-500 text-white rounded text-xs">
+                                            {{ $lead->status }}
+                                        </span>
+                                    @endif
                                 </td>
                             </tr>
 
