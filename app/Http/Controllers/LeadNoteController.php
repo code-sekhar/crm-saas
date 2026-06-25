@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LeadNote;
 use Illuminate\Http\Request;
 use App\Models\Lead;
+use App\Models\Activity;
 
 class LeadNoteController extends Controller
 {
@@ -47,6 +48,13 @@ class LeadNoteController extends Controller
                 'user_id'   => auth()->id(),
                 'note'      => $request->note
             ]);
+            Activity::create([
+                'tenant_id'  => auth()->user()->tenant_id,
+                'lead_id'    => $lead->id,
+                'user_id'    => auth()->id(),
+                'action'     => 'Note Added',
+                'description'=> 'Added a note.',
+            ]);
 
             return redirect()
                 ->back()
@@ -86,6 +94,13 @@ class LeadNoteController extends Controller
         $leadNote->update([
             'note' => $request->note
         ]);
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $leadNote->lead_id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Note Updated',
+            'description'=> 'Updated a note.',
+        ]);
 
         return redirect()
             ->back()
@@ -101,6 +116,14 @@ class LeadNoteController extends Controller
             $leadNote->tenant_id != auth()->user()->tenant_id,
             403
         );
+
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $leadNote->lead_id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Note Deleted',
+            'description'=> 'Deleted a note.',
+        ]);
 
         $leadNote->delete();
 

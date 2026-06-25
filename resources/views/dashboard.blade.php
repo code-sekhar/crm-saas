@@ -71,6 +71,25 @@
                     </h3>
                 </div>
             </div>
+            <div class="bg-blue-500 text-white rounded-lg p-6">
+                <h3 class="text-lg font-bold">Today's Follow-ups</h3>
+                <p class="text-4xl mt-3">{{ $todayFollowUps }}</p>
+            </div>
+
+            <div class="bg-yellow-500 text-white rounded-lg p-6">
+                <h3 class="text-lg font-bold">Upcoming</h3>
+                <p class="text-4xl mt-3">{{ $upcomingFollowUps }}</p>
+            </div>
+
+            <div class="bg-red-500 text-white rounded-lg p-6">
+                <h3 class="text-lg font-bold">Overdue</h3>
+                <p class="text-4xl mt-3">{{ $overdueFollowUps }}</p>
+            </div>
+
+            <div class="bg-green-600 text-white rounded-lg p-6">
+                <h3 class="text-lg font-bold">Completed</h3>
+                <p class="text-4xl mt-3">{{ $completedFollowUps }}</p>
+            </div>
 
         </div>
 

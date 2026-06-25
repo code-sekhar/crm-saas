@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lead;
 use Illuminate\Http\Request;
+use App\Models\Activity;
 
 
 class LeadController extends Controller
@@ -37,7 +38,7 @@ class LeadController extends Controller
      */
     public function store(Request $request)
     {
-        Lead::create([
+        $lead = Lead::create([
             'tenant_id' => auth()->user()->tenant_id,
 
             'name' => $request->name,
@@ -46,6 +47,13 @@ class LeadController extends Controller
             'source' => $request->source,
 
             'status' => 'New',
+        ]);
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $lead->id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Lead Created',
+            'description'=> 'New lead created: '.$lead->name,
         ]);
 
         return redirect()
@@ -64,7 +72,9 @@ class LeadController extends Controller
         );
         $lead->load([
             'tasks',
-            'leadNotes.user'
+            'leadNotes.user',
+            'followUps.user',
+            'activities.user'
         ]);
 
         return view('leads.show', compact('lead'));
@@ -100,6 +110,13 @@ class LeadController extends Controller
             'source' => $request->source,
             'status' => $request->status,
         ]);
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $lead->id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Lead Updated',
+            'description'=> 'Lead information updated.',
+        ]);
 
         return redirect()->route('leads.index');
     }
@@ -113,6 +130,13 @@ class LeadController extends Controller
             $lead->tenant_id != auth()->user()->tenant_id,
             403
         );
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $lead->id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Lead Deleted',
+            'description'=> 'Lead deleted.',
+        ]);
 
         $lead->delete();
 

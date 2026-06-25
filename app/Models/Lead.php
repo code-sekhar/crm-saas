@@ -39,4 +39,12 @@ class Lead extends Model
     {
         return $this->hasMany(LeadNote::class);
     }
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
+    public function followUps()
+    {
+        return $this->hasMany(FollowUp::class);
+    }
 }

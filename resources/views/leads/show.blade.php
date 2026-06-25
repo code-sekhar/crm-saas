@@ -294,6 +294,152 @@
 
             </div>
 
+            <!-- Follow Ups -->
+
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+                <div class="flex justify-between items-center mb-4">
+
+                    <h3 class="text-lg font-bold">
+                        Follow Ups
+                    </h3>
+
+                   <a  href="{{ route('follow-ups.create', ['lead' => $lead->id]) }}"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded">
+
+                    Add Follow Up
+
+                </a>
+
+                </div>
+
+                @forelse($lead->followUps as $followUp)
+
+                    <div class="border rounded-lg p-4 mb-3">
+
+                        <div class="flex justify-between">
+
+                            <div>
+
+                                <p class="font-semibold">
+
+                                    {{ $followUp->follow_up_date }}
+
+                                    @if($followUp->follow_up_time)
+
+                                        {{ $followUp->follow_up_time }}
+
+                                    @endif
+
+                                </p>
+
+                                <p class="text-gray-600 mt-2">
+
+                                    {{ $followUp->remarks }}
+
+                                </p>
+
+                            </div>
+
+                            {{-- <div>
+
+                                @if($followUp->status == 'Pending')
+
+                                    <span class="bg-yellow-500 text-white px-3 py-1 rounded">
+                                        Pending
+                                    </span>
+
+                                @elseif($followUp->status == 'Completed')
+
+                                    <span class="bg-green-600 text-white px-3 py-1 rounded">
+                                        Completed
+                                    </span>
+
+                                @else
+
+                                    <span class="bg-red-600 text-white px-3 py-1 rounded">
+                                        Missed
+                                    </span>
+
+                                @endif
+
+                            </div> --}}
+                            <div class="flex flex-col items-end gap-2">
+
+                                @if($followUp->status == 'Pending')
+
+                                    <span
+                                        class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">
+
+                                        Pending
+
+                                    </span>
+
+                                @elseif($followUp->status == 'Completed')
+
+                                    <span
+                                        class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+
+                                        Completed
+
+                                    </span>
+
+                                @else
+
+                                    <span
+                                        class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">
+
+                                        Missed
+
+                                    </span>
+
+                                @endif
+                                 {{-- Priority Badge --}}
+                                @if($followUp->priority == 'High')
+
+                                    <span class="px-3 py-1 text-xs rounded-full bg-red-600 text-white">
+                                        High
+                                    </span>
+
+                                @elseif($followUp->priority == 'Medium')
+
+                                    <span class="px-3 py-1 text-xs rounded-full bg-yellow-500 text-white">
+                                        Medium
+                                    </span>
+
+                                @else
+
+                                    <span class="px-3 py-1 text-xs rounded-full bg-green-600 text-white">
+                                        Low
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                        <div class="text-sm text-gray-500 mt-3">
+
+                            By:
+                            {{ $followUp->user->name }}
+
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <div class="text-gray-500">
+
+                        No Follow Ups Found.
+
+                    </div>
+
+                @endforelse
+
+            </div>
+
 
             <!-- Activity -->
             <div class="bg-white shadow rounded-lg p-6">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Models\Lead;
+use App\Models\Activity;
 
 class TaskController extends Controller
 {
@@ -45,7 +46,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        Task::create([
+        $task = Task::create([
 
             'tenant_id' => auth()->user()->tenant_id,
 
@@ -59,6 +60,13 @@ class TaskController extends Controller
             'due_date' => $request->due_date,
 
             'status' => 'Pending',
+        ]);
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $task->lead_id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Task Created',
+            'description'=> 'Created task: '.$task->title,
         ]);
 
         return redirect()
@@ -103,6 +111,13 @@ class TaskController extends Controller
             'due_date' => $request->due_date,
             'status' => $request->status,
         ]);
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $task->lead_id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Task Updated',
+            'description'=> 'Task updated.',
+        ]);
 
         return redirect()
             ->route('tasks.index')
@@ -117,6 +132,14 @@ class TaskController extends Controller
             $task->tenant_id != auth()->user()->tenant_id,
             403
         );
+
+        Activity::create([
+            'tenant_id'  => auth()->user()->tenant_id,
+            'lead_id'    => $task->lead_id,
+            'user_id'    => auth()->id(),
+            'action'     => 'Task Deleted',
+            'description'=> 'Task deleted.',
+        ]);
 
         $task->delete();
 
