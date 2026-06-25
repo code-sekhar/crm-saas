@@ -131,7 +131,7 @@
             </div>
 
             <!-- Notes -->
-            <div class="bg-white shadow rounded-lg p-6 mb-6">
+            {{-- <div class="bg-white shadow rounded-lg p-6 mb-6">
 
                 <div class="flex justify-between items-center mb-4">
 
@@ -145,11 +145,155 @@
 
                 </div>
 
-                <p class="text-gray-500">
-                    No notes available.
-                </p>
+                @if($lead->leadNotes->count())
+
+                    @foreach($lead->leadNotes as $note)
+
+                        {{ $note->note }}
+
+                        {{ $note->user->name }}
+
+                        {{ $note->created_at->diffForHumans() }}
+
+                    @endforeach
+
+                @else
+
+                No Notes
+
+                @endif
+
+            </div> --}}
+
+            <!-- Notes -->
+
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+                <h3 class="text-lg font-bold mb-4">
+                    Notes
+                </h3>
+
+                <form method="POST"
+                    action="{{ route('lead-notes.store') }}">
+
+                    @csrf
+
+                    <input
+                        type="hidden"
+                        name="lead_id"
+                        value="{{ $lead->id }}">
+
+                    <textarea
+                        name="note"
+                        rows="3"
+                        class="w-full border rounded p-3"
+                        placeholder="Write your note..."></textarea>
+
+                    <button
+                        class="mt-3 bg-green-600 text-white px-4 py-2 rounded">
+
+                        Add Note
+
+                    </button>
+
+                </form>
+
+                <hr class="my-5">
+
+                <div class="grid grid-cols-2 gap-4">
+                    @forelse($lead->leadNotes as $note)
+
+                        <div class="border rounded p-4 mb-4">
+
+                            <div id="view-{{ $note->id }}">
+
+                                <div class="mt-2 text-gray-700">
+                                    {{ $note->note }}
+                                </div>
+
+                                <div class="mt-3 flex gap-4">
+
+                                    <button
+                                        type="button"
+                                        onclick="editNote({{ $note->id }})"
+                                        class="text-blue-600">
+
+                                        Edit
+
+                                    </button>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ route('lead-notes.destroy',$note) }}">
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                            class="text-red-600">
+
+                                            Delete
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+                            <div
+                                id="edit-{{ $note->id }}"
+                                class="hidden">
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('lead-notes.update',$note) }}">
+
+                                    @csrf
+                                    @method('PUT')
+
+                                    <textarea
+                                        name="note"
+                                        rows="3"
+                                        class="w-full border rounded p-2">{{ $note->note }}</textarea>
+
+                                    <div class="mt-3">
+
+                                        <button
+                                            class="bg-blue-600 text-white px-3 py-1 rounded">
+
+                                            Save
+
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onclick="cancelEdit({{ $note->id }})"
+                                            class="bg-gray-500 text-white px-3 py-1 rounded ml-2">
+
+                                            Cancel
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    @empty
+
+                        <p class="text-gray-500">
+                            No Notes Yet.
+                        </p>
+
+                    @endforelse
+                </div>
 
             </div>
+
 
             <!-- Activity -->
             <div class="bg-white shadow rounded-lg p-6">
@@ -170,5 +314,29 @@
 
         </div>
     </div>
+<script>
 
+function editNote(id)
+{
+    document
+        .getElementById('view-'+id)
+        .classList.add('hidden');
+
+    document
+        .getElementById('edit-'+id)
+        .classList.remove('hidden');
+}
+
+function cancelEdit(id)
+{
+    document
+        .getElementById('edit-'+id)
+        .classList.add('hidden');
+
+    document
+        .getElementById('view-'+id)
+        .classList.remove('hidden');
+}
+
+</script>
 </x-app-layout>

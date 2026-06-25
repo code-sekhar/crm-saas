@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\LeadNote;
 
 class Lead extends Model
 {
@@ -33,5 +34,9 @@ class Lead extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+    public function leadNotes()
+    {
+        return $this->hasMany(LeadNote::class);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\LeadController;
 use App\Models\Lead;
 use App\Http\Controllers\TaskController;
 use App\Models\Task;
+use App\Http\Controllers\LeadNoteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -67,6 +68,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/leads/{lead}', [LeadController::class, 'show'])
     ->name('leads.show');
+    Route::post('/lead-notes',[LeadNoteController::class,'store'])->middleware('auth')->name('lead-notes.store');
+    Route::delete('/lead-notes/{leadNote}',[LeadNoteController::class, 'destroy'])->middleware('auth')->name('lead-notes.destroy');
+    Route::put('/lead-notes/{leadNote}',[LeadNoteController::class,'update'])->middleware('auth')->name('lead-notes.update');
+    Route::get(
+      '/lead-notes/{leadNote}/edit',
+            [LeadNoteController::class,'edit']
+        )->middleware('auth')
+        ->name('lead-notes.edit');
 });
 
 require __DIR__.'/auth.php';
