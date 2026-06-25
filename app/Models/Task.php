@@ -13,6 +13,7 @@ class Task extends Model
         'tenant_id',
         'assigned_to',
         'title',
+        'lead_id',
         'description',
         'due_date',
         'status'

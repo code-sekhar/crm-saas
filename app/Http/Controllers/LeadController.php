@@ -62,6 +62,7 @@ class LeadController extends Controller
             $lead->tenant_id != auth()->user()->tenant_id,
             403
         );
+        $lead->load(['tasks']);
 
         return view('leads.show', compact('lead'));
     }

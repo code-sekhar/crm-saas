@@ -32,7 +32,27 @@
                     name="description"
                     class="w-full border rounded p-2"></textarea>
             </div>
+            <div class="mb-4">
 
+                <label class="block mb-2">
+                    Select Lead
+                </label>
+
+                <select
+                    name="lead_id"
+                    class="w-full border rounded p-2">
+
+                    @foreach($leads as $lead)
+
+                        <option value="{{ $lead->id }}">
+                            {{ $lead->name }}
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+            </div>
             <div class="mb-4">
                 <label>Due Date</label>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use App\Models\Lead;
 
 class TaskController extends Controller
 {
@@ -28,7 +29,15 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return view('tasks.create');
+        $leads = Lead::where(
+                'tenant_id',
+                auth()->user()->tenant_id
+            )->get();
+
+            return view(
+                'tasks.create',
+                compact('leads')
+            );
     }
 
     /**
@@ -43,6 +52,7 @@ class TaskController extends Controller
             'assigned_to' => auth()->id(),
 
             'title' => $request->title,
+            'lead_id'=>$request->lead_id,
 
             'description' => $request->description,
 

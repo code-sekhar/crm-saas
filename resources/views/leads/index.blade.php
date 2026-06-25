@@ -7,15 +7,15 @@
 </x-slot>
 
 <div class="py-6">
-    @if(session('success'))
 
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('success') }}
-        </div>
-
-    @endif
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        @if(session('success'))
 
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                {{ session('success') }}
+            </div>
+
+        @endif
         <div class="bg-white shadow rounded-lg">
 
             <div class="p-6">
@@ -99,31 +99,30 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="border p-2 d-flex gap-2 justify-content-center">
-                                <a href="{{ route('leads.edit',$lead) }}" style="
-                                    width: 20px !important;
-                                    display: flex;
-                                    float: left;
-                                ">
-                                    <x-bxs-edit />
-                                </a>
+                            <td class="border p-2 d-flex gap-3 ">
+                                <div class="d-flex gap-3 justify-content-center full-width">
+                                    <a href="{{ route('leads.edit',$lead) }}" class="bg-yellow-600 text-white px-2 py-1 rounded cursor-pointer">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
 
-                                <form
-                                    method="POST"
-                                    action="{{ route('leads.destroy',$lead) }}"
-                                    style="display:inline">
+                                    <a href="{{ route('leads.show', $lead->id) }}" class="bg-green-600 text-white px-2 py-1 mx-2 rounded cursor-pointer">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </a>
 
-                                    @csrf
-                                    @method('DELETE')
+                                    <form
+                                        method="POST"
+                                        action="{{ route('leads.destroy',$lead) }}"
+                                        style="display:inline">
 
-                                    <button type="submit" style="
-    width: 20px !important;
-    display: flex;
-">
-                                        <x-ri-delete-bin-4-fill />
-                                    </button>
+                                        @csrf
+                                        @method('DELETE')
 
-                                </form>
+                                        <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded cursor-pointer">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+
+                                    </form>
+                                </div>
                             </td>
 
                         </tr>
