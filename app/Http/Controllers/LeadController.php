@@ -102,6 +102,9 @@ class LeadController extends Controller
             $lead->tenant_id != auth()->user()->tenant_id,
             403
         );
+        $request->validate([
+            'status' => 'required|in:New,Contacted,Qualified,Proposal,Negotiation,Won,Lost',
+        ]);
 
         $lead->update([
             'name' => $request->name,

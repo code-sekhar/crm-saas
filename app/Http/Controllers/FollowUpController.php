@@ -90,7 +90,15 @@ class FollowUpController extends Controller
      */
     public function edit(FollowUp $followUp)
     {
-        //
+        abort_if(
+            $followUp->tenant_id != auth()->user()->tenant_id,
+            403
+        );
+
+        return view(
+            'follow-ups.edit',
+            compact('followUp')
+        );
     }
 
     /**
@@ -98,7 +106,35 @@ class FollowUpController extends Controller
      */
     public function update(Request $request, FollowUp $followUp)
     {
-        //
+        abort_if(
+            $followUp->tenant_id != auth()->user()->tenant_id,
+            403
+        );
+
+        $request->validate([
+            'follow_up_date' => 'required|date',
+            'remarks' => 'nullable|string',
+            'priority' => 'required',
+            'status' => 'required',
+        ]);
+
+        $followUp->update([
+
+            'follow_up_date' => $request->follow_up_date,
+
+            'follow_up_time' => $request->follow_up_time,
+
+            'remarks' => $request->remarks,
+
+            'priority' => $request->priority,
+
+            'status' => $request->status,
+
+        ]);
+
+        return redirect()
+            ->route('follow-ups.index')
+            ->with('success','Follow Up Updated');
     }
 
     /**

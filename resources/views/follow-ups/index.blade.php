@@ -126,12 +126,25 @@
 
                         <td class="border p-3">
 
-                            <a href="{{ route('leads.show',$followUp->lead_id) }}"
-                               class="bg-blue-600 text-white px-3 py-1 rounded">
+                            <div class="flex gap-2 justify-center">
 
-                                View Lead
+                                <a
+                                    href="{{ route('leads.show',$followUp->lead_id) }}"
+                                    class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
 
-                            </a>
+                                    View
+
+                                </a>
+
+                                <a
+                                    href="{{ route('follow-ups.edit',$followUp) }}"
+                                    class="bg-yellow-500 text-white px-3 py-1 rounded text-sm">
+
+                                    Edit
+
+                                </a>
+
+                            </div>
 
                         </td>
 

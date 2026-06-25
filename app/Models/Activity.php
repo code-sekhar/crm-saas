@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
+
+    protected $fillable = [
+        'tenant_id',
+        'lead_id',
+        'user_id',
+        'action',
+        'description',
+    ];
     public function lead()
     {
         return $this->belongsTo(Lead::class);

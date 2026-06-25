@@ -30,6 +30,7 @@ Route::resource(
 Route::get('/dashboard', function () {
 
     $tenantId = auth()->user()->tenant_id;
+    $todayLeads = Lead::where('tenant_id', $tenantId)->whereDate('created_at', today())->count();
 
     $totalLeads = Lead::where('tenant_id', $tenantId)->count();
 
@@ -74,6 +75,28 @@ Route::get('/dashboard', function () {
     $completedFollowUps = FollowUp::where('tenant_id', $tenantId)
         ->where('status', 'Completed')
         ->count();
+    $conversionRate = $totalLeads > 0
+    ? round(($wonLeads / $totalLeads) * 100)
+    : 0;
+    $newLeads = Lead::where('tenant_id', $tenantId)
+    ->where('status', 'New')
+    ->count();
+
+    $contactedLeads = Lead::where('tenant_id', $tenantId)
+        ->where('status', 'Contacted')
+        ->count();
+
+    $qualifiedLeads = Lead::where('tenant_id', $tenantId)
+        ->where('status', 'Qualified')
+        ->count();
+
+    $proposalLeads = Lead::where('tenant_id', $tenantId)
+        ->where('status', 'Proposal')
+        ->count();
+
+    $negotiationLeads = Lead::where('tenant_id', $tenantId)
+        ->where('status', 'Negotiation')
+        ->count();
 
     return view('dashboard', compact(
         'totalLeads',
@@ -85,7 +108,14 @@ Route::get('/dashboard', function () {
         'todayFollowUps',
         'upcomingFollowUps',
         'overdueFollowUps',
-        'completedFollowUps'
+        'completedFollowUps',
+        'todayLeads',
+        'conversionRate',
+        'newLeads',
+        'contactedLeads',
+        'qualifiedLeads',
+        'proposalLeads',
+        'negotiationLeads'
     ));
 
 })->middleware(['auth'])->name('dashboard');

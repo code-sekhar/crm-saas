@@ -105,9 +105,15 @@
                         Qualified
                     </option>
 
+
                     <option value="Proposal"
                         {{ $lead->status == 'Proposal' ? 'selected' : '' }}>
                         Proposal
+                    </option>
+
+                    <option value="Negotiation"
+                        {{ $lead->status == 'Negotiation' ? 'selected' : '' }}>
+                        Negotiation
                     </option>
 
                     <option value="Won"
