@@ -441,7 +441,7 @@
             </div>
 
 
-            <!-- Activity -->
+            {{-- <!-- Activity -->
             <div class="bg-white shadow rounded-lg p-6">
 
                 <h3 class="text-lg font-bold mb-4">
@@ -455,6 +455,146 @@
                     </li>
 
                 </ul>
+
+            </div> --}}
+            <!-- Activity Timeline -->
+
+            <div class="bg-white shadow-lg rounded-xl p-6 mt-8">
+
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+
+                    <h2 class="text-xl font-bold text-gray-800">
+                        Activity Timeline
+                    </h2>
+
+                    <span class="bg-indigo-100 text-indigo-700 text-sm px-4 py-1 rounded-full">
+                        {{ $lead->activities->count() }} Activities
+                    </span>
+
+                </div>
+
+                @forelse($lead->activities as $activity)
+
+                    <div class="relative flex pb-8">
+
+                        @if(!$loop->last)
+                            <div class="absolute left-5 top-10 h-full w-0.5 bg-gray-200"></div>
+                        @endif
+
+                        <!-- Icon -->
+                        <div class="flex-shrink-0 z-10">
+
+                            @php
+                                $bg='bg-gray-500';
+                                $icon='•';
+
+                                switch($activity->action){
+
+                                    case 'lead_created':
+                                        $bg='bg-green-500';
+                                        $icon='➕';
+                                        break;
+
+                                    case 'note_added':
+                                        $bg='bg-blue-500';
+                                        $icon='📝';
+                                        break;
+
+                                    case 'followup_added':
+                                        $bg='bg-yellow-500';
+                                        $icon='📅';
+                                        break;
+
+                                    case 'task_created':
+                                        $bg='bg-purple-500';
+                                        $icon='✔';
+                                        break;
+
+                                    case 'task_completed':
+                                        $bg='bg-green-600';
+                                        $icon='✓';
+                                        break;
+
+                                    case 'status_changed':
+                                        $bg='bg-red-500';
+                                        $icon='⇄';
+                                        break;
+
+                                }
+                            @endphp
+
+                            <div class="w-10 h-10 rounded-full {{ $bg }} flex items-center justify-center text-white text-lg shadow">
+                                {{ $icon }}
+                            </div>
+
+                        </div>
+
+                        <!-- Content -->
+
+                        <div class="ml-5 flex-1">
+
+                            <div class="flex justify-between">
+
+                                <div>
+
+                                    <h4 class="font-semibold text-gray-900">
+
+                                        {{ ucwords(str_replace('_',' ',$activity->action)) }}
+
+                                    </h4>
+
+                                    <p class="text-gray-600 mt-1">
+
+                                        {{ $activity->description }}
+
+                                    </p>
+
+                                    <div class="mt-2 text-sm text-gray-400">
+
+                                        By
+                                        <span class="font-medium text-gray-600">
+                                            {{ $activity->user->name }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="text-sm text-gray-400 whitespace-nowrap">
+
+                                    {{ $activity->created_at->diffForHumans() }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <div class="text-center py-10">
+
+                        <div class="text-6xl mb-3">
+                            📜
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-600">
+
+                            No Activity Yet
+
+                        </h3>
+
+                        <p class="text-gray-400 mt-2">
+
+                            Activities will appear here automatically.
+
+                        </p>
+
+                    </div>
+
+                @endforelse
 
             </div>
 

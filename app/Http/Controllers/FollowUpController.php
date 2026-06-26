@@ -53,7 +53,7 @@ class FollowUpController extends Controller
             'remarks' => 'nullable|string',
         ]);
 
-        FollowUp::create([
+        $followUps = FollowUp::create([
 
             'tenant_id' => auth()->user()->tenant_id,
 
@@ -70,6 +70,14 @@ class FollowUpController extends Controller
 
             'status' => 'Pending',
 
+        ]);
+        Activity::create([
+            'tenant_id'   => auth()->user()->tenant_id,
+            'lead_id'     => $followUps->lead_id,
+            'user_id'     => auth()->id(),
+            'type'        => 'followup_added',
+            'description' => 'Follow-up scheduled for ' . $followUps->follow_up_date,
+            'action'      => 'followup_added',
         ]);
 
         return redirect()
