@@ -130,12 +130,15 @@ Route::get('/dashboard', function () {
 
 Route::resource('follow-ups', FollowUpController::class)->middleware('auth');
 
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/leads/{lead}', [LeadController::class, 'show'])
     ->name('leads.show');
+    Route::put('/follow-ups/{followUp}/complete',[FollowUpController::class, 'complete'])->name('follow-ups.complete');
+    Route::delete('/follow-ups/{followUp}',[FollowUpController::class,'destroy'])->name('follow-ups.destroy');
 
 });
 

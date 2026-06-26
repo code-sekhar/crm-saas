@@ -35,7 +35,8 @@ return new class extends Migration
             $table->enum('status',[
                 'Pending',
                 'Completed',
-                'Missed'
+                'Missed',
+                'Overdue'
             ])->default('Pending');
 
             $table->timestamps();

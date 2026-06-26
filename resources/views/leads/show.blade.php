@@ -417,16 +417,73 @@
 
                             </div>
 
+
                         </div>
 
                         <div class="text-sm text-gray-500 mt-3">
 
                             By:
                             {{ $followUp->user->name }}
+                            <div class="flex gap-2">
+                                {{-- <form
+                                    method="POST"
+                                    action="{{ route('follow-ups.destroy',$followUp) }}"
+                                    class="mt-3">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        onclick="return confirm('Delete this Follow-up?')"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded-lg text-sm">
+
+                                        <i class="fa-regular fa-trash-can"></i> Delete
+
+                                    </button>
+
+                                </form> --}}
+                                <form
+                                    id="delete-form-{{ $followUp->id }}"
+                                    method="POST"
+                                    action="{{ route('follow-ups.destroy',$followUp) }}">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="button"
+                                        onclick="deleteFollowUp({{ $followUp->id }})"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+
+                                        <i class="fa-solid fa-trash"></i>
+                                        Delete
+
+                                    </button>
+
+                                </form>
+                                @if($followUp->status == 'Pending')
+
+
+                                    <form  method="POST" action="{{ route('follow-ups.complete',$followUp) }}" class="mt-3">
+
+                                        @csrf
+                                        @method('PUT')
+
+                                        <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+
+                                            ✓ Mark Completed
+
+                                        </button>
+
+                                    </form>
+
+                                @endif
+                            </div>
 
                         </div>
 
                     </div>
+
 
                 @empty
 
@@ -438,7 +495,9 @@
 
                 @endforelse
 
+
             </div>
+
 
 
             {{-- <!-- Activity -->
@@ -502,8 +561,23 @@
 
                                     case 'followup_added':
                                         $bg='bg-yellow-500';
-                                        $icon='📅';
+                                        $icon='<i class="fa-regular fa-calendar"></i>';
                                         break;
+
+                                    case 'followup_completed':
+                                          $bg = 'bg-green-600';
+                                          $icon = '<i class="fa-regular fa-circle-check"></i>';
+                                          break;
+
+                                    case 'followup_deleted':
+                                          $bg='bg-red-600';
+                                          $icon='<i class="fa-solid fa-trash"></i>';
+                                          break;
+
+                                    case 'followup_overdue':
+                                          $bg='bg-red-600';
+                                          $icon='<i class="fa-solid fa-clock"></i>';
+                                          break;
 
                                     case 'task_created':
                                         $bg='bg-purple-500';
@@ -523,8 +597,11 @@
                                 }
                             @endphp
 
-                            <div class="w-10 h-10 rounded-full {{ $bg }} flex items-center justify-center text-white text-lg shadow">
+                            {{-- <div class="w-10 h-10 rounded-full {{ $bg }} flex items-center justify-center text-white text-lg shadow">
                                 {{ $icon }}
+                            </div> --}}
+                            <div class="w-10 h-10 rounded-full {{ $bg }} flex items-center justify-center text-white text-lg shadow">
+                                {!! $icon !!}
                             </div>
 
                         </div>
@@ -536,12 +613,29 @@
                             <div class="flex justify-between">
 
                                 <div>
+                                    @php
+                                    $title = match($activity->action){
+                                        'lead_created'        => 'Lead Created',
+                                        'note_added'          => 'Note Added',
+                                        'followup_added'      => 'Follow-up Added',
+                                        'followup_completed'  => 'Follow-up Completed',
+                                        'task_created'        => 'Task Created',
+                                        'task_completed'      => 'Task Completed',
+                                        'status_changed'      => 'Status Changed',
+                                        'followup_deleted' => 'Follow-up Deleted',
+                                        default               => ucwords(str_replace('_',' ',$activity->action)),
+                                    };
+                                    @endphp
 
                                     <h4 class="font-semibold text-gray-900">
+                                        {{ $title }}
+                                    </h4>
+
+                                    {{-- <h4 class="font-semibold text-gray-900">
 
                                         {{ ucwords(str_replace('_',' ',$activity->action)) }}
 
-                                    </h4>
+                                    </h4> --}}
 
                                     <p class="text-gray-600 mt-1">
 
@@ -562,7 +656,12 @@
 
                                 <div class="text-sm text-gray-400 whitespace-nowrap">
 
-                                    {{ $activity->created_at->diffForHumans() }}
+                                    {{-- {{ $activity->created_at->diffForHumans() }} --}}
+                                    <span class="bg-gray-100 text-gray-500 text-xs px-3 py-1 rounded-full">
+
+                                        {{ $activity->created_at->diffForHumans() }}
+
+                                    </span>
 
                                 </div>
 
@@ -622,6 +721,40 @@ function cancelEdit(id)
     document
         .getElementById('view-'+id)
         .classList.remove('hidden');
+}
+
+
+function deleteFollowUp(id)
+{
+    Swal.fire({
+
+        title: 'Delete Follow-up?',
+
+        text: "This action cannot be undone.",
+
+        icon: 'warning',
+
+        showCancelButton: true,
+
+        confirmButtonColor: '#dc2626',
+
+        cancelButtonColor: '#6b7280',
+
+        confirmButtonText: 'Yes, Delete',
+
+        cancelButtonText: 'Cancel'
+
+    }).then((result) => {
+
+        if(result.isConfirmed){
+
+            document
+                .getElementById('delete-form-'+id)
+                .submit();
+
+        }
+
+    });
 }
 
 </script>

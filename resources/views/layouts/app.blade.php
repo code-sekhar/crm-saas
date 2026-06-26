@@ -34,7 +34,32 @@
             </main>
         </div>
 
+        @if(session('success'))
+
+            <script>
+
+            Swal.fire({
+
+                toast: true,
+
+                position: 'top-end',
+
+                icon: 'success',
+
+                title: '{{ session("success") }}',
+
+                showConfirmButton: false,
+
+                timer: 2500
+
+            });
+
+            </script>
+
+        @endif
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     </body>

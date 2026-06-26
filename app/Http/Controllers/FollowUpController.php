@@ -84,6 +84,30 @@ class FollowUpController extends Controller
             ->route('leads.show', $request->lead_id)
             ->with('success', 'Follow Up Added Successfully');
     }
+    public function complete(FollowUp $followUp)
+    {
+        abort_if(
+            $followUp->tenant_id != auth()->user()->tenant_id,
+            403
+        );
+
+        $followUp->update([
+            'status' => 'Completed'
+        ]);
+
+        Activity::create([
+            'tenant_id'   => auth()->user()->tenant_id,
+            'lead_id'     => $followUp->lead_id,
+            'user_id'     => auth()->id(),
+            'action'      => 'followup_completed',
+            'description' => 'Follow-up marked as completed.',
+        ]);
+
+        return back()->with(
+            'success',
+            'Follow-up completed successfully.'
+        );
+    }
 
     /**
      * Display the specified resource.
@@ -150,6 +174,28 @@ class FollowUpController extends Controller
      */
     public function destroy(FollowUp $followUp)
     {
-        //
+        abort_if(
+            $followUp->tenant_id != auth()->user()->tenant_id,
+            403
+        );
+
+        Activity::create([
+            'tenant_id'   => auth()->user()->tenant_id,
+            'lead_id'     => $followUp->lead_id,
+            'user_id'     => auth()->id(),
+            'action'      => 'followup_deleted',
+            'description' => 'Follow-up deleted.',
+        ]);
+
+        $leadId = $followUp->lead_id;
+
+        $followUp->delete();
+
+        return redirect()
+            ->route('leads.show', $leadId)
+            ->with(
+                'success',
+                'Follow-up deleted successfully.'
+            );
     }
 }
