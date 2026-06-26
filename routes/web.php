@@ -10,6 +10,7 @@ use App\Models\FollowUp;
 use App\Http\Controllers\LeadNoteController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\FollowUpController;
+use App\Http\Controllers\CalendarController;
 use Carbon\Carbon;
 
 
@@ -139,6 +140,13 @@ Route::middleware('auth')->group(function () {
     ->name('leads.show');
     Route::put('/follow-ups/{followUp}/complete',[FollowUpController::class, 'complete'])->name('follow-ups.complete');
     Route::delete('/follow-ups/{followUp}',[FollowUpController::class,'destroy'])->name('follow-ups.destroy');
+    Route::get('/calendar',[CalendarController::class,'index'])
+        ->name('calendar.index');
+
+    Route::get('/calendar/events',[CalendarController::class,'events'])
+        ->name('calendar.events');
+    Route::put('/calendar/follow-up/{followUp}', [CalendarController::class, 'updateDate'])
+    ->name('calendar.update');
 
 });
 

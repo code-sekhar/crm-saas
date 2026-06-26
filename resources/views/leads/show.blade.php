@@ -579,6 +579,11 @@
                                           $icon='<i class="fa-solid fa-clock"></i>';
                                           break;
 
+                                    case 'followup_rescheduled':
+                                          $bg = 'bg-indigo-500';
+                                          $icon = '<i class="fa-solid fa-arrows-rotate"></i>';
+                                          break;
+
                                     case 'task_created':
                                         $bg='bg-purple-500';
                                         $icon='✔';

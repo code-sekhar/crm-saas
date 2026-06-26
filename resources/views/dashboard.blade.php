@@ -409,95 +409,98 @@
             </div>
 
         </div>
-        <div class="bg-white shadow rounded-lg">
-            <div class="p-6 border-b">
-                <h3 class="text-lg font-semibold">
-                    Recent Leads
-                </h3>
-            </div>
+         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 mb-8">
+            <div class="bg-white shadow rounded-lg">
+                <div class="p-6 border-b">
+                    <h3 class="text-lg font-semibold">
+                        Recent Leads
+                    </h3>
+                </div>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
 
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Name
-                            </th>
-
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Email
-                            </th>
-
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Source
-                            </th>
-
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="bg-white divide-y divide-gray-200">
-
-                        @forelse($recentLeads ?? [] as $lead)
-
+                        <thead class="bg-gray-50">
                             <tr>
-                                <td class="px-6 py-4">
-                                    {{ $lead->name }}
-                                </td>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    Name
+                                </th>
 
-                                <td class="px-6 py-4">
-                                    {{ $lead->email }}
-                                </td>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    Email
+                                </th>
 
-                                <td class="px-6 py-4">
-                                    {{ $lead->source }}
-                                </td>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    Source
+                                </th>
 
-                                {{-- <td class="px-6 py-4">
-                                    {{ $lead->status }}
-                                </td> --}}
-                                 <td class="px-6 py-4">
-                                    @if($lead->status == 'New')
-                                        <span class="px-2 py-1 bg-blue-500 text-white rounded text-xs">
-                                            New
-                                        </span>
-
-                                    @elseif($lead->status == 'Won')
-                                        <span class="px-2 py-1 bg-green-500 text-white rounded text-xs">
-                                            Won
-                                        </span>
-
-                                    @elseif($lead->status == 'Lost')
-                                        <span class="px-2 py-1 bg-red-500 text-white rounded text-xs">
-                                            Lost
-                                        </span>
-
-                                    @else
-                                        <span class="px-2 py-1 bg-gray-500 text-white rounded text-xs">
-                                            {{ $lead->status }}
-                                        </span>
-                                    @endif
-                                </td>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    Status
+                                </th>
                             </tr>
+                        </thead>
 
-                        @empty
+                        <tbody class="bg-white divide-y divide-gray-200">
 
-                            <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                    No leads found.
-                                </td>
-                            </tr>
+                            @forelse($recentLeads ?? [] as $lead)
 
-                        @endforelse
+                                <tr>
+                                    <td class="px-6 py-4">
+                                        {{ $lead->name }}
+                                    </td>
 
-                    </tbody>
+                                    <td class="px-6 py-4">
+                                        {{ $lead->email }}
+                                    </td>
 
-                </table>
+                                    <td class="px-6 py-4">
+                                        {{ $lead->source }}
+                                    </td>
+
+                                    {{-- <td class="px-6 py-4">
+                                        {{ $lead->status }}
+                                    </td> --}}
+                                    <td class="px-6 py-4">
+                                        @if($lead->status == 'New')
+                                            <span class="px-2 py-1 bg-blue-500 text-white rounded text-xs">
+                                                New
+                                            </span>
+
+                                        @elseif($lead->status == 'Won')
+                                            <span class="px-2 py-1 bg-green-500 text-white rounded text-xs">
+                                                Won
+                                            </span>
+
+                                        @elseif($lead->status == 'Lost')
+                                            <span class="px-2 py-1 bg-red-500 text-white rounded text-xs">
+                                                Lost
+                                            </span>
+
+                                        @else
+                                            <span class="px-2 py-1 bg-gray-500 text-white rounded text-xs">
+                                                {{ $lead->status }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+
+                            @empty
+
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                        No leads found.
+                                    </td>
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+                </div>
             </div>
-        </div>
+         </div>
+
 
     </div>
 </div>
