@@ -106,9 +106,9 @@
 
         </a>
 
-        <a href="{{route('reports.index')}}"
-           class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('reports.*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}
-           :class="sidebarOpen ? 'gap-3 justify-start' : 'justify-center'">
+        <a href="{{ route('reports.index') }}"
+            class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('reports.*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}"
+            :class="sidebarOpen ? 'gap-3 justify-start' : 'justify-center'">
 
             <i class="fa-solid fa-chart-pie w-5"></i>
 

@@ -49,7 +49,7 @@ Route::get('/kanban',[KanbanController::class,'index'])
     ->name('kanban.index');
 Route::put('/kanban/{lead}',[LeadController::class,'updateStatus'])->middleware('auth')->name('kanban.update');
 Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('auth');
-Route::get('/reports/filter', [ReportController::class, 'filter'])->name('reports.filter');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -63,8 +63,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/calendar/events',[CalendarController::class,'events'])
         ->name('calendar.events');
-    Route::put('/calendar/follow-up/{followUp}', [CalendarController::class, 'updateDate'])
-    ->name('calendar.update');
+    Route::put('/calendar/follow-up/{followUp}', [CalendarController::class, 'updateDate'])->name('calendar.update');
+    Route::get('/reports/filter', [ReportController::class, 'filter'])->name('reports.filter');
+    Route::get('/reports/export/excel',[ReportController::class,'exportExcel'])->name('reports.export.excel');
+    // Route::get('/reports/export/pdf',[ReportController::class,'exportPdf'])->name('reports.export.pdf');
+    Route::post('/reports/export/pdf', [ReportController::class, 'exportPdf'])
+    ->name('reports.export.pdf');
 
 });
 

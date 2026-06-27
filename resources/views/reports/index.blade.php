@@ -7,10 +7,18 @@
     </x-slot>
     <form
     id="filterForm"
+    method="POST"
+    action="{{ route('reports.export.pdf') }}"
     class="bg-white rounded-xl shadow p-5 mb-8">
 
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <input type="hidden" name="status_chart" id="status_chart">
 
+            <input type="hidden" name="source_chart" id="source_chart">
+
+            <input type="hidden" name="monthly_chart" id="monthly_chart">
+
+            <input type="hidden" name="revenue_chart" id="revenue_chart">
             <select
                 name="status"
                 class="rounded-lg border-gray-300">
@@ -108,7 +116,8 @@
         <div class="mt-5 flex gap-3">
 
             <button
-                type="submit"
+                id="filterBtn"
+                type="button"
                 class="bg-blue-600 text-white px-6 py-2 rounded-lg">
 
                 Filter
@@ -147,19 +156,30 @@
 
             <div class="flex gap-3">
 
-                <button
+                {{-- <button
                     class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg">
 
                     Export Excel
 
-                </button>
+                </button> --}}
 
-                <button
+                <a
+                    id="excelExportBtn"
+                    href="{{ route('reports.export.excel') }}"
+                    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg">
+
+                    Export Excel
+
+                </a>
+
+                <a
+                    id="pdfExportBtn"
+                    href="{{ route('reports.export.pdf') }}"
                     class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg">
 
                     Export PDF
 
-                </button>
+                </a>
 
             </div>
 
@@ -477,9 +497,31 @@
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+    function animateCounter(id, value, suffix = '', prefix = '') {
 
+        const counterInstance = new countUp.CountUp(id, value, {
+
+            duration: 1.2,
+            separator: ',',
+            suffix: suffix,
+            prefix: prefix
+
+        });
+
+        if (counterInstance.error) {
+
+            console.error(counterInstance.error);
+
+        } else {
+
+            counterInstance.start();
+
+        }
+
+    }
 //
 // ==========================
 // Sales Funnel Chart
@@ -706,9 +748,10 @@ const monthlyChart = new Chart(monthlyCtx,{
     }
 
 });
+
 const revenueCtx = document.getElementById('monthlyRevenueChart');
 
-new Chart(revenueCtx,{
+const revenueChart = new Chart(revenueCtx,{
 
     type:'line',
 
@@ -746,121 +789,27 @@ new Chart(revenueCtx,{
     }
 
 });
-document
-.getElementById('filterForm')
-.addEventListener('submit',function(e){
 
-    e.preventDefault();
-
-    let form=new FormData(this);
-
-    fetch("{{ route('reports.filter') }}?"+new URLSearchParams(form))
-    .then(res=>res.json())
-    .then(data=>{
-
-        // KPI
-
-        document.getElementById('totalLeads').innerHTML=data.totalLeads;
-
-        document.getElementById('wonLeads').innerHTML=data.wonLeads;
-
-        document.getElementById('lostLeads').innerHTML=data.lostLeads;
-
-        document.getElementById('pendingTasks').innerHTML=data.pendingTasks;
-
-        document.getElementById('pendingFollowUps').innerHTML=data.pendingFollowUps;
-
-        document.getElementById('conversionRate').innerHTML=data.conversionRate+'%';
-
-        // Status Chart
-
-        statusChart.data.datasets[0].data=[
-
-            data.statusChart.New,
-
-            data.statusChart.Contacted,
-
-            data.statusChart.Qualified,
-
-            data.statusChart.Proposal,
-
-            data.statusChart.Negotiation,
-
-            data.statusChart.Won,
-
-            data.statusChart.Lost
-
-        ];
-
-        statusChart.update();
-
-        // Source Chart
-
-        sourceChart.data.labels=data.sourceChart.labels;
-
-        sourceChart.data.datasets[0].data=data.sourceChart.values;
-
-        sourceChart.update();
-
-        // Monthly
-
-        monthlyChart.data.datasets[0].data=data.monthlyLeads;
-
-        monthlyChart.update();
-
-        // Won Table
-
-        let html='';
-
-        data.recentWonDeals.forEach(function(item){
-
-            html+=`
-
-            <tr class="border-b">
-
-                <td class="px-6 py-4">${item.name}</td>
-
-                <td class="px-6 py-4">${item.email}</td>
-
-                <td class="px-6 py-4">
-
-                    ₹ ${Number(item.value ?? 0).toLocaleString()}
-
-                </td>
-
-            </tr>
-
-            `;
-
-        });
-
-        document
-        .getElementById('wonDealsTable')
-        .innerHTML=html;
-
-    });
-
-});
 // ==========================
 // AJAX Filter
 // ==========================
+document.getElementById('filterBtn').addEventListener('click', function () {
 
-document.getElementById('filterForm').addEventListener('submit', function (e) {
+    const form = document.getElementById('filterForm');
 
-    e.preventDefault();
-
-    const btn = this.querySelector('button[type="submit"]');
+    const btn = this;
 
     btn.disabled = true;
     btn.innerHTML = 'Filtering...';
 
-    const params = new URLSearchParams(new FormData(this));
+    const params = new URLSearchParams(new FormData(form));
 
     fetch("{{ route('reports.filter') }}?" + params.toString(), {
         headers: {
             'Accept': 'application/json'
         }
     })
+
     .then(response => {
 
         if (!response.ok) {
@@ -870,26 +819,24 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
         return response.json();
 
     })
+
     .then(data => {
 
-        // ======================
-        // KPI Cards
-        // ======================
+        // KPI
+        animateCounter('totalLeads', data.totalLeads);
+        animateCounter('wonLeads', data.wonLeads);
+        animateCounter('lostLeads', data.lostLeads);
+        animateCounter('pendingTasks', data.pendingTasks);
+        animateCounter('pendingFollowUps', data.pendingFollowUps);
+        animateCounter('conversionRate', data.conversionRate, '%');
 
-        document.getElementById('totalLeads').textContent = data.totalLeads;
-        document.getElementById('wonLeads').textContent = data.wonLeads;
-        document.getElementById('lostLeads').textContent = data.lostLeads;
-        document.getElementById('pendingTasks').textContent = data.pendingTasks;
-        document.getElementById('pendingFollowUps').textContent = data.pendingFollowUps;
-        document.getElementById('conversionRate').textContent = data.conversionRate + '%';
+        animateCounter('totalRevenue', data.totalRevenue, '', '₹ ');
+        animateCounter('expectedRevenue', data.expectedRevenue, '', '₹ ');
+        animateCounter('averageDealValue', data.averageDealValue, '', '₹ ');
+        animateCounter('largestDeal', data.largestDeal, '', '₹ ');
 
-
-        // ======================
         // Sales Funnel
-        // ======================
-
         statusChart.data.datasets[0].data = [
-
             data.statusChart.New,
             data.statusChart.Contacted,
             data.statusChart.Qualified,
@@ -897,44 +844,30 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
             data.statusChart.Negotiation,
             data.statusChart.Won,
             data.statusChart.Lost
-
         ];
-
         statusChart.update();
 
-
-        // ======================
-        // Source Chart
-        // ======================
-
+        // Source
         sourceChart.data.labels = data.sourceChart.labels;
-
         sourceChart.data.datasets[0].data = data.sourceChart.values;
-
         sourceChart.update();
 
-
-        // ======================
-        // Monthly Chart
-        // ======================
-
+        // Monthly Leads
         monthlyChart.data.datasets[0].data = data.monthlyLeads;
-
         monthlyChart.update();
 
+        // Revenue
+        revenueChart.data.datasets[0].data = data.monthlyRevenue;
+        revenueChart.update();
 
-        // ======================
-        // Won Deals Table
-        // ======================
-
+        // Recent Won Deals
         let html = '';
 
         if (data.recentWonDeals.length === 0) {
 
             html = `
                 <tr>
-                    <td colspan="3"
-                        class="text-center py-8 text-gray-400">
+                    <td colspan="3" class="text-center py-8 text-gray-500">
                         No Won Deals
                     </td>
                 </tr>
@@ -942,23 +875,15 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
 
         } else {
 
-            data.recentWonDeals.forEach(function (item) {
+            data.recentWonDeals.forEach(item => {
 
                 html += `
                     <tr class="border-b">
-
-                        <td class="px-6 py-4">
-                            ${item.name}
-                        </td>
-
-                        <td class="px-6 py-4">
-                            ${item.email}
-                        </td>
-
+                        <td class="px-6 py-4">${item.name}</td>
+                        <td class="px-6 py-4">${item.email}</td>
                         <td class="px-6 py-4">
                             ₹ ${Number(item.value ?? 0).toLocaleString()}
                         </td>
-
                     </tr>
                 `;
 
@@ -969,6 +894,7 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
         document.getElementById('wonDealsTable').innerHTML = html;
 
     })
+
     .catch(error => {
 
         console.error(error);
@@ -976,6 +902,7 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
         alert('Something went wrong.');
 
     })
+
     .finally(() => {
 
         btn.disabled = false;
@@ -984,8 +911,6 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
     });
 
 });
-
-
 // ======================================
 // Animated Counter
 // ======================================
@@ -1032,17 +957,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         {
             id: 'expectedRevenue',
-            value: {{ $expectedRevenue }}
+            value: {{ $expectedRevenue }},
+            prefix:'₹ '
         },
 
         {
-            id: 'averageDeal',
-            value: {{ $averageDeal }}
+            id: 'averageDealValue',
+            value: {{ $averageDealValue }},
+            prefix:'₹ '
         },
 
         {
             id: 'largestDeal',
-            value: {{ $largestDeal }}
+            value: {{ $largestDeal }},
+            prefix:'₹ '
         }
 
     ];
@@ -1057,23 +985,107 @@ document.addEventListener("DOMContentLoaded", function () {
 
             decimal: '.',
 
-            suffix: counter.suffix ?? '',
+            suffix:counter.suffix ?? '',
 
-            prefix: ''
+            prefix:counter.prefix ?? ''
 
         };
 
-        const countUp = new countUp.CountUp(counter.id, counter.value, options);
 
-        if (!countUp.error) {
+        const counterInstance = new countUp.CountUp(
+            counter.id,
+            counter.value,
+            options
+        );
 
-            countUp.start();
+        if (counterInstance.error) {
+
+            console.error(counterInstance.error);
+
+        } else {
+
+            counterInstance.start();
 
         }
+
+        // if (!countUp.error) {
+
+        //     countUp.start();
+
+        // }
 
     });
 
 });
+
+document.getElementById('excelExportBtn').addEventListener('click', function () {
+
+    const params = new URLSearchParams(
+        new FormData(document.getElementById('filterForm'))
+    );
+
+    this.href = "{{ route('reports.export.excel') }}?" + params.toString();
+
+});
+
+// document.getElementById('pdfExportBtn').addEventListener('click', function(){
+
+//     const params = new URLSearchParams(
+//         new FormData(
+//             document.getElementById('filterForm')
+//         )
+//     );
+
+//     this.href =
+//         "{{ route('reports.export.pdf') }}?"
+//         + params.toString();
+
+// });
+// document
+// .getElementById('pdfExportBtn')
+// .addEventListener('click',function(e){
+
+//     e.preventDefault();
+
+//     document.getElementById('status_chart').value =
+//         statusChart.toBase64Image();
+
+//     document.getElementById('source_chart').value =
+//         sourceChart.toBase64Image();
+
+//     document.getElementById('monthly_chart').value =
+//         monthlyChart.toBase64Image();
+
+//     document.getElementById('revenue_chart').value =
+//         revenueChart.toBase64Image();
+
+//     const params=new URLSearchParams(
+//         new FormData(document.getElementById('filterForm'))
+//     );
+
+//     window.location =
+//         this.href+'?'+params.toString();
+
+// });
+document.getElementById('pdfExportBtn').onclick=function(e){
+
+    e.preventDefault();
+
+    document.getElementById('status_chart').value =
+        statusChart.toBase64Image();
+
+    document.getElementById('source_chart').value =
+        sourceChart.toBase64Image();
+
+    document.getElementById('monthly_chart').value =
+        monthlyChart.toBase64Image();
+
+    document.getElementById('revenue_chart').value =
+        revenueChart.toBase64Image();
+
+    document.getElementById('filterForm').submit();
+
+};
 </script>
 
 </x-app-layout>

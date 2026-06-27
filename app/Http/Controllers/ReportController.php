@@ -8,6 +8,9 @@ use App\Models\Task;
 use App\Models\FollowUp;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LeadsExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -214,6 +217,8 @@ class ReportController extends Controller
             'recentWonDeals'    => $recentWonDeals,
             'users'             => $users,
 
+
+
         ];
     }
     public function filter(Request $request)
@@ -243,79 +248,50 @@ class ReportController extends Controller
             'monthlyRevenue'    => $data['monthlyRevenue'],
         ]);
     }
-    // public function index(Request $request)
+    // public function exportExcel(Request $request)
     // {
-    //     $tenantId = auth()->user()->tenant_id;
+    //     return Excel::download(
 
-    //     // KPI Cards
-    //     $totalLeads = Lead::where('tenant_id', $tenantId)->count();
+    //         new LeadsExport($request),
 
-    //     $wonLeads = Lead::where('tenant_id', $tenantId)
-    //         ->where('status', 'Won')
-    //         ->count();
+    //         'crm-report.xlsx'
 
-    //     $lostLeads = Lead::where('tenant_id', $tenantId)
-    //         ->where('status', 'Lost')
-    //         ->count();
-
-    //     $pendingTasks = Task::where('tenant_id', $tenantId)
-    //         ->where('status', 'Pending')
-    //         ->count();
-
-    //     $pendingFollowUps = FollowUp::where('tenant_id', $tenantId)
-    //         ->where('status', 'Pending')
-    //         ->count();
-
-    //     $conversionRate = $totalLeads > 0
-    //         ? round(($wonLeads / $totalLeads) * 100, 2)
-    //         : 0;
-
-    //     // Sales Funnel
-    //     $statusChart = [
-    //         'New' => Lead::where('tenant_id', $tenantId)->where('status', 'New')->count(),
-    //         'Contacted' => Lead::where('tenant_id', $tenantId)->where('status', 'Contacted')->count(),
-    //         'Qualified' => Lead::where('tenant_id', $tenantId)->where('status', 'Qualified')->count(),
-    //         'Proposal' => Lead::where('tenant_id', $tenantId)->where('status', 'Proposal')->count(),
-    //         'Negotiation' => Lead::where('tenant_id', $tenantId)->where('status', 'Negotiation')->count(),
-    //         'Won' => Lead::where('tenant_id', $tenantId)->where('status', 'Won')->count(),
-    //         'Lost' => Lead::where('tenant_id', $tenantId)->where('status', 'Lost')->count(),
-    //     ];
-
-    //     // Monthly Leads
-    //     $monthlyLeads = [];
-
-    //     for ($i = 1; $i <= 12; $i++) {
-
-    //         $monthlyLeads[] = Lead::where('tenant_id', $tenantId)
-    //             ->whereYear('created_at', now()->year)
-    //             ->whereMonth('created_at', $i)
-    //             ->count();
-    //     }
-
-    //     // Lead Source Report
-    //     $sourceChart = Lead::where('tenant_id', $tenantId)
-    //         ->select('source', DB::raw('COUNT(*) as total'))
-    //         ->groupBy('source')
-    //         ->pluck('total', 'source');
-
-    //     // Recent Won Deals
-    //     $recentWonDeals = Lead::where('tenant_id', $tenantId)
-    //         ->where('status', 'Won')
-    //         ->latest()
-    //         ->take(10)
-    //         ->get();
-
-    //     return view('reports.index', compact(
-    //         'totalLeads',
-    //         'wonLeads',
-    //         'lostLeads',
-    //         'pendingTasks',
-    //         'pendingFollowUps',
-    //         'conversionRate',
-    //         'statusChart',
-    //         'monthlyLeads',
-    //         'sourceChart',
-    //         'recentWonDeals'
-    //     ));
+    //     );
     // }
+    public function exportExcel(Request $request)
+    {
+       //dd($request->all());
+        return Excel::download(
+            new LeadsExport($request->all()),
+            'crm-report.xlsx'
+        );
+    }
+    // public function exportPdf(Request $request)
+    // {
+
+
+    //     $report = $this->getReportData($request);
+
+
+    //     $pdf = Pdf::loadView('reports.pdf', $report)->setPaper('a4', 'landscape');
+
+    //     return $pdf->download('CRM-Report.pdf');
+    // }
+    public function exportPdf(Request $request)
+    {
+        // Get all report data
+        $report = $this->getReportData($request);
+
+        // Add chart images from request
+        $report['statusChartImage'] = $request->status_chart;
+        $report['sourceChartImage'] = $request->source_chart;
+        $report['monthlyChartImage'] = $request->monthly_chart;
+        $report['revenueChartImage'] = $request->revenue_chart;
+
+        // Generate PDF
+        $pdf = Pdf::loadView('reports.pdf', $report)
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('CRM-Report.pdf');
+    }
 }
