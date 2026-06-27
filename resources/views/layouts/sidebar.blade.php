@@ -3,7 +3,7 @@
     class="bg-slate-900 text-white min-h-screen flex flex-col transition-all duration-300">
 
     <!-- Logo -->
-    <div class="px-6 py-6 border-b border-slate-700">
+    <div class="px-6 py-3 border-b border-slate-700">
 
         <div x-show="sidebarOpen">
 

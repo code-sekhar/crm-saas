@@ -8,7 +8,7 @@
 
 <div class="py-6">
 
-<div class="max-w-7xl mx-auto">
+<div class=" mx-auto">
 
     <div class="bg-white shadow rounded p-6">
 
