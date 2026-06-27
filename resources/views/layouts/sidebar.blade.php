@@ -124,6 +124,21 @@
             </span>
 
         </a>
+        <a href="{{ route('settings.company') }}"
+           class="flex items-center px-4 py-3 rounded-lg transition
+           {{ request()->routeIs('settings.*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}"
+            :class="sidebarOpen ? 'gap-3 justify-start' : 'justify-center'">
+
+            <i class="fa-solid fa-table-columns w-5"></i>
+
+
+            <span x-show="sidebarOpen">Company Settings</span>
+
+        </a>
+
+
+
+
 
     </nav>
 

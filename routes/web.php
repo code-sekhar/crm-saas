@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CompanySettingController;
 
 
 Route::get('/', function () {
@@ -69,6 +70,15 @@ Route::middleware('auth')->group(function () {
     // Route::get('/reports/export/pdf',[ReportController::class,'exportPdf'])->name('reports.export.pdf');
     Route::post('/reports/export/pdf', [ReportController::class, 'exportPdf'])
     ->name('reports.export.pdf');
+    Route::get(
+        '/settings/company',
+        [CompanySettingController::class,'index']
+    )->name('settings.company');
+
+    Route::post(
+        '/settings/company',
+        [CompanySettingController::class,'store']
+    )->name('settings.company.store');
 
 });
 
