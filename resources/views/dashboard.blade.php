@@ -409,6 +409,39 @@
             </div>
 
         </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white shadow rounded-xl p-6 h-[500px]">
+
+                <h2 class="text-xl font-bold mb-5">
+
+                    Lead Status Analytics
+
+                </h2>
+
+                <div class="h-96">
+
+                    <canvas id="statusChart"></canvas>
+
+                </div>
+
+            </div>
+            <div class="bg-white shadow rounded-xl p-6 h-[500px]">
+
+                <h2 class="text-xl font-bold mb-5">
+
+                    Monthly Leads
+
+                </h2>
+
+                <div class="h-96">
+
+                    <canvas id="monthlyChart"></canvas>
+
+                </div>
+
+            </div>
+        </div>
+
          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 mb-8">
             <div class="bg-white shadow rounded-lg">
                 <div class="p-6 border-b">
@@ -504,5 +537,210 @@
 
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script>
+
+const ctx = document.getElementById('statusChart');
+
+new Chart(ctx, {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: [
+            'New',
+            'Contacted',
+            'Qualified',
+            'Proposal',
+            'Won',
+            'Lost'
+        ],
+
+        datasets: [{
+
+            data: [
+                {{ $statusChart['New'] }},
+                {{ $statusChart['Contacted'] }},
+                {{ $statusChart['Qualified'] }},
+                {{ $statusChart['Proposal'] }},
+                {{ $statusChart['Won'] }},
+                {{ $statusChart['Lost'] }}
+            ],
+
+            backgroundColor: [
+                '#3B82F6', // New
+                '#6366F1', // Contacted
+                '#F59E0B', // Qualified
+                '#A855F7', // Proposal
+                '#22C55E', // Won
+                '#EF4444'  // Lost
+            ],
+
+            borderWidth: 2,
+            borderColor: '#fff'
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        cutout: '65%',
+
+        plugins: {
+
+            legend: {
+
+                position: 'right',
+
+                labels: {
+                    padding: 20,
+                    usePointStyle: true
+                }
+
+            },
+
+            title: {
+
+                display: false,
+
+                text: 'Lead Status Distribution',
+
+                font: {
+                    size: 18
+                }
+
+            },
+            tooltip: {
+
+                callbacks: {
+
+                    label: function(context) {
+
+                        return ' Leads: ' + context.parsed.x;
+
+                    }
+
+                }
+
+            }
+
+        },
+
+        animation: {
+
+            animateRotate: true,
+
+            duration: 1200
+
+        }
+
+    }
+
+});
+const monthlyCanvas = document.getElementById('monthlyChart');
+
+const monthlyCtx = monthlyCanvas.getContext('2d');
+
+const gradient = monthlyCtx.createLinearGradient(0,0,0,400);
+
+gradient.addColorStop(0,'#2563eb');
+gradient.addColorStop(1,'#60a5fa');
+
+new Chart(monthlyCtx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: [
+            'Jan','Feb','Mar','Apr','May','Jun',
+            'Jul','Aug','Sep','Oct','Nov','Dec'
+        ],
+
+        datasets: [{
+
+            label: 'Leads',
+
+            data: @json($monthlyLeads),
+
+            backgroundColor: gradient,
+
+            borderRadius: 8,
+
+            borderWidth: 0,
+
+            hoverBackgroundColor: '#1d4ed8'
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+                display: false
+            },
+
+            title: {
+                display: false,
+                text: 'Monthly Lead Generation'
+            },
+            // tooltip: {
+            //     callbacks: {
+            //         label: function(context) {
+            //             return context.dataset.label + ": " + context.parsed.y;
+            //         }
+            //     }
+            // }
+            tooltip: {
+                backgroundColor: '#111827',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                padding: 12,
+
+                callbacks: {
+                    title: function(context) {
+                        return context[0].label + " 2026";
+                    },
+                    label: function(context) {
+                        return "Total Leads : " + context.parsed.y;
+                    }
+                }
+            }
+        },
+
+        scales: {
+
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            },
+
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+
+        }
+
+    }
+
+});
+</script>
 </x-app-layout>
