@@ -14,6 +14,7 @@ use App\Http\Controllers\CalendarController;
 use Carbon\Carbon;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KanbanController;
+use App\Http\Controllers\ReportController;
 
 
 Route::get('/', function () {
@@ -47,7 +48,8 @@ Route::get('/kanban',[KanbanController::class,'index'])
     ->middleware('auth')
     ->name('kanban.index');
 Route::put('/kanban/{lead}',[LeadController::class,'updateStatus'])->middleware('auth')->name('kanban.update');
-
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('auth');
+Route::get('/reports/filter', [ReportController::class, 'filter'])->name('reports.filter');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
