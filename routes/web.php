@@ -13,6 +13,7 @@ use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\CalendarController;
 use Carbon\Carbon;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KanbanController;
 
 
 Route::get('/', function () {
@@ -42,7 +43,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('lead-notes.edit');
 
 Route::resource('follow-ups', FollowUpController::class)->middleware('auth');
-
+Route::get('/kanban',[KanbanController::class,'index'])
+    ->middleware('auth')
+    ->name('kanban.index');
+Route::put('/kanban/{lead}',[LeadController::class,'updateStatus'])->middleware('auth')->name('kanban.update');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

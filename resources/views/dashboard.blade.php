@@ -23,7 +23,7 @@
     </x-slot>
   <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
 <div class="py-8">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class=" mx-auto sm:px-4 lg:px-4">
 
         <div class="mb-8">
 

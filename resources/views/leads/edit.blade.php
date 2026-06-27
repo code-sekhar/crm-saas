@@ -47,6 +47,20 @@
                     value="{{ $lead->phone }}"
                     class="w-full border rounded p-2">
             </div>
+            <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Lead Value
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        name="value"
+                        value="{{ old('value', $lead->value ?? '') }}"
+                        class="w-full border rounded-lg px-3 py-2"
+                        placeholder="50000">
+                </div>
+
 
             <div class="mb-4">
                 <label>Source</label>

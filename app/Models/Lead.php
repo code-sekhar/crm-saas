@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\LeadNote;
+use App\Models\User;
 
 class Lead extends Model
 {
@@ -16,7 +17,9 @@ class Lead extends Model
         'phone',
         'source',
         'status',
-        'notes'
+        'notes',
+        'value',
+        'user_id'
     ];
 
     public function tenant(): BelongsTo
@@ -46,5 +49,9 @@ class Lead extends Model
     public function followUps()
     {
         return $this->hasMany(FollowUp::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

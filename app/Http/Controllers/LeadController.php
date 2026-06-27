@@ -47,6 +47,8 @@ class LeadController extends Controller
             'source' => $request->source,
 
             'status' => 'New',
+            'value' => $request->value,
+            'user_id' => auth()->id()
         ]);
         Activity::create([
             'tenant_id'  => auth()->user()->tenant_id,
@@ -112,6 +114,8 @@ class LeadController extends Controller
             'phone' => $request->phone,
             'source' => $request->source,
             'status' => $request->status,
+            'value' => $request->value,
+
         ]);
         Activity::create([
             'tenant_id'  => auth()->user()->tenant_id,
@@ -146,5 +150,32 @@ class LeadController extends Controller
         return redirect()
             ->route('leads.index')
             ->with('success', 'Lead Deleted');
+    }
+    public function updateStatus(Request $request, Lead $lead)
+    {
+        $oldStatus = $lead->status;
+
+        $lead->update([
+            'status' => $request->status
+        ]);
+
+        Activity::create([
+
+            'tenant_id' => auth()->user()->tenant_id,
+
+            'lead_id' => $lead->id,
+
+            'user_id' => auth()->id(),
+
+            'action' => 'lead_status_changed',
+
+            'description' =>
+                "Lead moved from {$oldStatus} to {$request->status}"
+
+        ]);
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

@@ -12,7 +12,7 @@ Edit Follow Up
 
     <div class="py-6">
 
-        <div class="max-w-4xl mx-auto">
+        <div class=" mx-auto">
 
             <div class="bg-white shadow rounded-lg p-6">
 
